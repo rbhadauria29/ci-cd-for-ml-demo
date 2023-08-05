@@ -13,8 +13,6 @@ jobs:
 
     steps:
       - name: Comment PR
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
