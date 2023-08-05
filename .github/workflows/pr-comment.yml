@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: PR
+name: PR-comment
 
 # Controls when the workflow will run
 on:
@@ -11,7 +11,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-pr-comment:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -23,6 +23,8 @@ jobs:
 
       # Setup comment pull request action to comment on PR
       - name: Comment PR
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
