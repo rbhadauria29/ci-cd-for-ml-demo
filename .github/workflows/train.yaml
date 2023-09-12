@@ -1,4 +1,4 @@
-name: hp-tuning
+name: train
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 permissions: write-all
 
 jobs:
-  hp_tune:
+  train_and_publish_report:
     if: startsWith(github.head_ref, 'train/')
     runs-on: ubuntu-latest
     steps:
