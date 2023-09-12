@@ -18,7 +18,6 @@ def load_data(file_path):
 def get_hp_tuning_results(grid_search: GridSearchCV) -> str:
     """Get the results of hyperparameter tuning in a Markdown table"""
     cv_results = pd.DataFrame(grid_search.cv_results_)
-    cv_results.sort_values(by="mean_test_score", ascending=False, inplace=True)
 
     # Extract and split the 'params' column into subcolumns
     params_df = pd.json_normalize(cv_results["params"])
@@ -27,12 +26,13 @@ def get_hp_tuning_results(grid_search: GridSearchCV) -> str:
     cv_results = pd.concat([cv_results, params_df], axis=1)
 
     # Get the columns to display in the Markdown table
-    markdown_table = cv_results[
+    cv_results = cv_results[
         ["rank_test_score", "mean_test_score", "std_test_score"]
         + list(params_df.columns)
-    ].to_markdown(index=False)
+    ]
 
-    return markdown_table
+    cv_results.sort_values(by="mean_test_score", ascending=False, inplace=True)
+    return cv_results.to_markdown(index=False)
 
 
 def main():
