@@ -39,7 +39,7 @@ jobs:
       #   with:
       #     node-version: '16'
       
-      - name: Create hp
+      - name: Create training branch
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
