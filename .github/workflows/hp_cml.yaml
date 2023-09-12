@@ -44,5 +44,5 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # git config --global --add safe.directory /__w/ml-cicd/ml-cicd
-          export BRANCH_NAME=train/$(git rev-parse --short "${{ env. GITHUB_SHA }}")
+          export BRANCH_NAME=train/$(git rev-parse --short "${{ github.sha }}")
           cml pr create --user-email hp-bot@cicd.ai --user-name HPBot --message "HP tuning" --branch $BRANCH_NAME rfc_best_params.json
