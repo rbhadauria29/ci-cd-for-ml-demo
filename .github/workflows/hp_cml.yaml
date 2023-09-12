@@ -1,0 +1,45 @@
+name: hp-tuning
+
+on:
+  pull_request:
+    branches: main
+
+permissions: write-all
+jobs:
+  hp_tune:
+    # if: startsWith(github.head_ref, 'hp_tune/')
+    runs-on: ubuntu-latest
+    # container: ghcr.io/iterative/cml:0-dvc2-base1
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
+
+      - name: Run DVC pipeline
+        run: dvc repro -f hp_tune
+
+      - name: Setup CML
+        uses: iterative/setup-cml@v1
+
+      # - name: Setup node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16'
+      
+      - name: Create hp
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # git config --global --add safe.directory /__w/ml-cicd/ml-cicd
+          export BRANCH_NAME=train/$(git rev-parse --short "${{ env. GITHUB_SHA }}")
+          cml pr create --user-email hp-bot@cicd.ai --user-name HPBot --message "HP tuning" --branch $BRANCH_NAME rfc_best_params.json
