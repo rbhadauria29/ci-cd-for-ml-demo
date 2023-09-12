@@ -8,7 +8,7 @@ permissions: write-all
 
 jobs:
   hp_tune:
-    if: startsWith(github.head_ref, 'hp_tune/')
+    if: startsWith(github.head_ref, 'train/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
@@ -31,12 +31,12 @@ jobs:
       - name: Run DVC pipeline
         run: |
           curl https://assets.datacamp.com/production/repositories/6313/datasets/23f9a730997791402d0ce59bcb7d4007ddfeb540/weather.csv -o raw_dataset/weather.csv
-          dvc repro -f hp_tune
+          dvc repro train
       
-      - name: Create training branch
+      - name: Create CML report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cml comment create hp_tuning_results.md
-          export BRANCH_NAME=train/$(git rev-parse --short "${{ github.sha }}")
-          cml pr create --user-email hp-bot@cicd.ai --user-name HPBot --message "HP tuning" --branch $BRANCH_NAME rfc_best_params.json
+          git fetch --prune
+          dvc metrics diff --md main >> metrics_compare.md
+          cml comment create metrics_compare.md
