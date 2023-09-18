@@ -39,4 +39,4 @@ jobs:
         run: |
           cml comment create hp_tuning_results.md
           export BRANCH_NAME=train/$(git rev-parse --short "${{ github.sha }}")
-          cml pr create --user-email hp-bot@cicd.ai --user-name HPBot --message "HP tuning" --branch $BRANCH_NAME rfc_best_params.json
+          cml pr create --user-email hp-bot@cicd.ai --user-name HPBot --message "HP tuning" --branch $BRANCH_NAME --target-branch main rfc_best_params.json
