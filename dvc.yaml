@@ -1,0 +1,48 @@
+stages:
+  preprocess:
+    cmd: python preprocess_dataset.py
+    deps:
+    - preprocess_dataset.py
+    - raw_dataset/weather.csv
+    - utils_and_constants.py
+    outs:
+    - processed_dataset/weather.csv
+  hp_tune:
+    cmd: python hp_tuning.py
+    deps:
+    - processed_dataset/weather.csv
+    - hp_config.json
+    - hp_tuning.py
+    - utils_and_constants.py
+    outs:
+      - hp_tuning_results.md:
+          cache: false
+  train:
+    cmd: python train.py
+    deps:
+    - metrics_and_plots.py
+    - model.py
+    - processed_dataset/weather.csv
+    - rfc_best_params.json
+    - train.py
+    - utils_and_constants.py
+    metrics:
+      - metrics.json:
+          cache: false
+    plots:
+    - predictions.csv:
+        template: confusion
+        x: predicted_label
+        y: true_label
+        x_label: 'Predicted label'
+        y_label: 'True label'
+        title: Confusion matrix
+        cache: false
+    - roc_curve.csv:
+        template: simple
+        x: fpr
+        y: tpr
+        x_label: 'False Positive Rate'
+        y_label: 'True Positive Rate'
+        title: ROC curve
+        cache: false

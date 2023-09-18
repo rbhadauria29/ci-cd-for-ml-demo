@@ -1,0 +1,6 @@
+{
+    "n_estimators": [2, 4, 5],
+    "max_depth": [10, 20, 50],
+    "random_state": [1993]
+}
+  
