@@ -7,7 +7,7 @@ on:
 permissions: write-all
 
 jobs:
-  hp_tune:
+  hp_tune_and_publish_report:
     if: startsWith(github.head_ref, 'hp_tune/')
     runs-on: ubuntu-latest
     steps:
