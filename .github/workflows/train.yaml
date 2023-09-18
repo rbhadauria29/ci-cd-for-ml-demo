@@ -1,0 +1,42 @@
+name: train
+
+on:
+  pull_request:
+    branches: main
+
+permissions: write-all
+
+jobs:
+  train_and_publish_report:
+    if: startsWith(github.head_ref, 'train/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Setup DVC
+        uses: iterative/setup-dvc@v1
+
+      - name: Setup CML
+        uses: iterative/setup-cml@v1
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run DVC pipeline
+        run: |
+          curl https://assets.datacamp.com/production/repositories/6313/datasets/23f9a730997791402d0ce59bcb7d4007ddfeb540/weather.csv -o raw_dataset/weather.csv
+          dvc repro train
+      
+      - name: Create CML report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch --prune
+          dvc metrics diff --md main >> metrics_compare.md
+          cml comment create metrics_compare.md
